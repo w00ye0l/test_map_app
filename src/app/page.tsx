@@ -1,168 +1,111 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { CheckCircle, Github, Copy, Sparkles } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import axios from 'axios';
-
-const PACKAGE_NAME = '@easynext/cli';
-const CURRENT_VERSION = 'v0.1.35';
-
-function latestVersion(packageName: string) {
-  return axios
-    .get('https://registry.npmjs.org/' + packageName + '/latest')
-    .then((res) => res.data.version);
-}
+import { useState, useMemo } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import ProductList from "@/components/ProductList";
+import MapView from "@/components/MapView";
+import { products, Category } from "@/data/products";
+import { MarkerStyle } from "@/types/marker";
 
 export default function Home() {
-  const { toast } = useToast();
-  const [latest, setLatest] = useState<string | null>(null);
+  const [highlightedProductId, setHighlightedProductId] = useState<
+    number | null
+  >(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isListCollapsed, setIsListCollapsed] = useState(false);
+  const [markerStyle, setMarkerStyle] = useState<MarkerStyle>("price");
+  const [selectedCategory, setSelectedCategory] = useState<Category>("all");
 
-  useEffect(() => {
-    const fetchLatestVersion = async () => {
-      try {
-        const version = await latestVersion(PACKAGE_NAME);
-        setLatest(`v${version}`);
-      } catch (error) {
-        console.error('Failed to fetch version info:', error);
-      }
-    };
-    fetchLatestVersion();
-  }, []);
+  // Replace with your Google Maps API key
+  const GOOGLE_MAPS_API_KEY =
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY_HERE";
 
-  const handleCopyCommand = () => {
-    navigator.clipboard.writeText(`npm install -g ${PACKAGE_NAME}@latest`);
-    toast({
-      description: 'Update command copied to clipboard',
-    });
+  // Filter products based on search query and category
+  const filteredProducts = useMemo(() => {
+    let filtered = products;
+
+    // Filter by category
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(
+        (product) => product.category === selectedCategory
+      );
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (product) =>
+          product.title.toLowerCase().includes(query) ||
+          product.description.toLowerCase().includes(query) ||
+          product.location.address.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
+  }, [searchQuery, selectedCategory]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
-  const needsUpdate = latest && latest !== CURRENT_VERSION;
-
   return (
-    <div className="flex min-h-screen relative overflow-hidden">
+    <div className="flex flex-col h-screen w-full">
+      {/* Navigation Bar */}
+      <Navbar
+        onSearch={handleSearch}
+        markerStyle={markerStyle}
+        onMarkerStyleChange={setMarkerStyle}
+      />
+
       {/* Main Content */}
-      <div className="min-h-screen flex bg-gray-100">
-        <div className="flex flex-col p-5 md:p-8 space-y-4">
-          <h1 className="text-3xl md:text-5xl font-semibold tracking-tighter !leading-tight text-left">
-            Easiest way to start
-            <br /> Next.js project
-            <br /> with Cursor
-          </h1>
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Left side - Product List */}
+        <div
+          className={`h-full bg-gray-50 transition-all duration-300 ease-in-out relative ${
+            isListCollapsed ? "w-0" : "w-full md:w-1/2"
+          }`}
+        >
+          {!isListCollapsed && (
+            <ProductList
+              products={filteredProducts}
+              onProductHover={setHighlightedProductId}
+              highlightedProductId={highlightedProductId}
+              searchQuery={searchQuery}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
+            />
+          )}
 
-          <p className="text-lg text-muted-foreground">
-            Get Pro-created Next.js bootstrap just in seconds
-          </p>
-
-          <div className="flex items-center gap-2">
-            <Button
-              asChild
-              size="lg"
-              variant="secondary"
-              className="gap-2 w-fit rounded-full px-4 py-2 border border-black"
-            >
-              <a href="https://github.com/easynextjs/easynext" target="_blank">
-                <Github className="w-4 h-4" />
-                GitHub
-              </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="secondary"
-              className="gap-2 w-fit rounded-full px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white"
-            >
-              <a href="https://easynext.org/premium" target="_blank">
-                <Sparkles className="w-4 h-4" />
-                Premium
-              </a>
-            </Button>
-          </div>
-          <Section />
-        </div>
-      </div>
-
-      <div className="min-h-screen ml-16 flex-1 flex flex-col items-center justify-center space-y-4">
-        <div className="flex flex-col items-center space-y-2">
-          <p className="text-muted-foreground">
-            Current Version: {CURRENT_VERSION}
-          </p>
-          <p className="text-muted-foreground">
-            Latest Version:{' '}
-            <span className="font-bold">{latest || 'Loading...'}</span>
-          </p>
+          {/* Toggle Button */}
+          <button
+            onClick={() => setIsListCollapsed(!isListCollapsed)}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full z-10 bg-white shadow-lg p-2 hover:bg-gray-100 transition-all duration-200 border border-l-0 border-gray-200 rounded-r-lg"
+          >
+            {isListCollapsed ? (
+              <ChevronRight className="w-6 h-6 text-gray-700" />
+            ) : (
+              <ChevronLeft className="w-6 h-6 text-gray-700" />
+            )}
+          </button>
         </div>
 
-        {needsUpdate && (
-          <div className="flex flex-col items-center space-y-2">
-            <p className="text-yellow-600">New version available!</p>
-            <p className="text-sm text-muted-foreground">
-              Copy and run the command below to update:
-            </p>
-            <div className="relative group">
-              <pre className="bg-gray-100 p-4 rounded-lg">
-                npm install -g {PACKAGE_NAME}@latest
-              </pre>
-              <button
-                onClick={handleCopyCommand}
-                className="absolute top-2 right-2 p-2 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <Copy className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
+        {/* Right side - Map */}
+        <div
+          className={`h-full transition-all duration-300 ease-in-out ${
+            isListCollapsed ? "w-full" : "w-0 md:w-1/2"
+          }`}
+        >
+          <MapView
+            products={filteredProducts}
+            onMarkerHover={setHighlightedProductId}
+            highlightedProductId={highlightedProductId}
+            apiKey={GOOGLE_MAPS_API_KEY}
+            markerStyle={markerStyle}
+          />
+        </div>
       </div>
     </div>
-  );
-}
-
-function Section() {
-  const items = [
-    { href: 'https://nextjs.org/', label: 'Next.js' },
-    { href: 'https://ui.shadcn.com/', label: 'shadcn/ui' },
-    { href: 'https://tailwindcss.com/', label: 'Tailwind CSS' },
-    { href: 'https://www.framer.com/motion/', label: 'framer-motion' },
-    { href: 'https://zod.dev/', label: 'zod' },
-    { href: 'https://date-fns.org/', label: 'date-fns' },
-    { href: 'https://ts-pattern.dev/', label: 'ts-pattern' },
-    { href: 'https://es-toolkit.dev/', label: 'es-toolkit' },
-    { href: 'https://zustand.docs.pmnd.rs/', label: 'zustand' },
-    { href: 'https://supabase.com/', label: 'supabase' },
-    { href: 'https://react-hook-form.com/', label: 'react-hook-form' },
-  ];
-
-  return (
-    <div className="flex flex-col py-5 md:py-8 space-y-2 opacity-75">
-      <p className="font-semibold">What&apos;s Included</p>
-
-      <div className="flex flex-col space-y-1 text-muted-foreground">
-        {items.map((item) => (
-          <SectionItem key={item.href} href={item.href}>
-            {item.label}
-          </SectionItem>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SectionItem({
-  children,
-  href,
-}: {
-  children: React.ReactNode;
-  href: string;
-}) {
-  return (
-    <a
-      href={href}
-      className="flex items-center gap-2 underline"
-      target="_blank"
-    >
-      <CheckCircle className="w-4 h-4" />
-      <p>{children}</p>
-    </a>
   );
 }
