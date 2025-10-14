@@ -54,7 +54,7 @@ export default function PropertyCard({
           <Heart
             className={`w-6 h-6 ${
               isFavorite
-                ? "fill-[#FF385C] stroke-[#FF385C]"
+                ? "fill-[#FF8C42] stroke-[#FF8C42]"
                 : "fill-black/50 stroke-white"
             }`}
           />

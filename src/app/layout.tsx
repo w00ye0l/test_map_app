@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Explore Stays - Find Your Perfect Place',
-  description: 'Browse and discover amazing places to stay with interactive map',
+  title: 'Locano - Local Connect Now',
+  description: 'Connect with local rental items and services instantly. Discover cameras, bikes, sports equipment, and more in your area.',
 };
 
 export default function RootLayout({

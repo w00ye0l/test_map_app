@@ -55,7 +55,7 @@ export default function SearchBar() {
               </button>
 
               {/* Search Button */}
-              <button className="bg-[#FF385C] text-white p-3 rounded-full hover:bg-[#E31C5F] transition-colors">
+              <button className="bg-[#FF8C42] text-white p-3 rounded-full hover:bg-[#E67A2E] transition-colors">
                 <Search className="w-5 h-5" />
               </button>
             </div>

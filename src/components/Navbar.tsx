@@ -68,7 +68,7 @@ export default function Navbar({
               variant === "main" ? "hidden md:flex" : "flex"
             }`}
           >
-            <MapPin className="w-8 h-8 text-blue-600" />
+            <MapPin className="w-8 h-8 text-[#FF8C42]" />
             <span className="text-xl font-bold text-gray-900">Locano</span>
           </Link>
 
@@ -121,7 +121,7 @@ export default function Navbar({
                       </div>
 
                       {/* Search Button */}
-                      <button className="bg-[#FF385C] text-white p-2 rounded-full hover:bg-[#E31C5F]">
+                      <button className="bg-[#FF8C42] text-white p-2 rounded-full hover:bg-[#E67A2E]">
                         <Search className="w-4 h-4" />
                       </button>
                     </div>
@@ -181,7 +181,7 @@ export default function Navbar({
                       </div>
 
                       {/* Search Button */}
-                      <button className="bg-[#FF385C] text-white p-2.5 rounded-full hover:bg-[#E31C5F] transition-colors">
+                      <button className="bg-[#FF8C42] text-white p-2.5 rounded-full hover:bg-[#E67A2E] transition-colors">
                         <Search className="w-4 h-4" />
                       </button>
                     </div>
@@ -320,7 +320,7 @@ export default function Navbar({
                       </div>
 
                       {/* Search Button */}
-                      <button className="bg-[#FF385C] text-white p-4 rounded-full hover:bg-[#E31C5F] transition-colors">
+                      <button className="bg-[#FF8C42] text-white p-4 rounded-full hover:bg-[#E67A2E] transition-colors">
                         <Search className="w-5 h-5" />
                       </button>
                     </div>
@@ -358,7 +358,7 @@ export default function Navbar({
                     onChange={(e) => setGuests(e.target.value)}
                     className="flex-1 text-sm bg-transparent outline-none placeholder:text-gray-400"
                   />
-                  <button className="bg-[#FF385C] text-white p-2 rounded-full hover:bg-[#E31C5F] transition-colors">
+                  <button className="bg-[#FF8C42] text-white p-2 rounded-full hover:bg-[#E67A2E] transition-colors">
                     <Search className="w-4 h-4" />
                   </button>
                 </div>

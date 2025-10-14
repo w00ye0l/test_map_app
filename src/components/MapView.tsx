@@ -34,18 +34,18 @@ export default function MapView({
           <div
             className={`transition-all duration-200 cursor-pointer shadow-lg p-1 rounded-full flex items-center gap-2 ${
               isHighlighted
-                ? "bg-blue-600 text-white scale-110"
-                : "bg-white text-gray-900 hover:bg-blue-600 hover:text-white hover:scale-105"
+                ? "bg-[#FF8C42] text-white scale-110"
+                : "bg-white text-gray-900 hover:bg-[#FF8C42] hover:text-white hover:scale-105"
             }`}
           >
             <div
               className={`p-1 rounded-full transition-all duration-200 ${
-                isHighlighted ? "bg-white" : "bg-blue-600"
+                isHighlighted ? "bg-white" : "bg-[#FF8C42]"
               }`}
             >
               <Home
                 className={`w-5 h-5 ${
-                  isHighlighted ? "text-blue-600" : "text-white"
+                  isHighlighted ? "text-[#FF8C42]" : "text-white"
                 }`}
               />
             </div>
@@ -57,18 +57,18 @@ export default function MapView({
           <div
             className={`transition-all duration-200 cursor-pointer shadow-lg p-1 pr-2 rounded-full flex items-center gap-2 ${
               isHighlighted
-                ? "bg-blue-600 text-white scale-110"
-                : "bg-white text-gray-900 hover:bg-blue-600 hover:text-white hover:scale-105"
+                ? "bg-[#FF8C42] text-white scale-110"
+                : "bg-white text-gray-900 hover:bg-[#FF8C42] hover:text-white hover:scale-105"
             }`}
           >
             <div
               className={`p-1 rounded-full transition-all duration-200 ${
-                isHighlighted ? "bg-white" : "bg-blue-600"
+                isHighlighted ? "bg-white" : "bg-[#FF8C42]"
               }`}
             >
               <Home
                 className={`w-5 h-5 ${
-                  isHighlighted ? "text-blue-600" : "text-white"
+                  isHighlighted ? "text-[#FF8C42]" : "text-white"
                 }`}
               />
             </div>
@@ -82,8 +82,8 @@ export default function MapView({
           <div
             className={`transition-all duration-200 cursor-pointer shadow-lg px-3 py-2 rounded-full font-semibold text-sm ${
               isHighlighted
-                ? "bg-blue-600 text-white scale-110"
-                : "bg-white text-gray-900 hover:bg-blue-600 hover:text-white hover:scale-105"
+                ? "bg-[#FF8C42] text-white scale-110"
+                : "bg-white text-gray-900 hover:bg-[#FF8C42] hover:text-white hover:scale-105"
             }`}
           >
             ${product.price}

@@ -47,7 +47,7 @@ export default function ProductList({
               onClick={() => onCategoryChange?.(category.value)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                 selectedCategory === category.value
-                  ? 'bg-blue-600 text-white shadow-md'
+                  ? 'bg-[#FF8C42] text-white shadow-md'
                   : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
               }`}
             >
