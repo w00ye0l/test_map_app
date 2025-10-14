@@ -1,111 +1,135 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import ProductList from "@/components/ProductList";
-import MapView from "@/components/MapView";
-import { products, Category } from "@/data/products";
-import { MarkerStyle } from "@/types/marker";
+import PropertyCard from "@/components/PropertyCard";
+import { properties } from "@/data/properties";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from "react";
 
 export default function Home() {
-  const [highlightedProductId, setHighlightedProductId] = useState<
-    number | null
-  >(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isListCollapsed, setIsListCollapsed] = useState(false);
-  const [markerStyle, setMarkerStyle] = useState<MarkerStyle>("price");
-  const [selectedCategory, setSelectedCategory] = useState<Category>("all");
+  const popularRentalRef = useRef<HTMLDivElement>(null);
+  const seoulRentalRef = useRef<HTMLDivElement>(null);
+  const busanRentalRef = useRef<HTMLDivElement>(null);
 
-  // Replace with your Google Maps API key
-  const GOOGLE_MAPS_API_KEY =
-    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY_HERE";
-
-  // Filter products based on search query and category
-  const filteredProducts = useMemo(() => {
-    let filtered = products;
-
-    // Filter by category
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (product) => product.category === selectedCategory
-      );
+  const scroll = (
+    ref: React.RefObject<HTMLDivElement>,
+    direction: "left" | "right"
+  ) => {
+    if (ref.current) {
+      const scrollAmount = direction === "left" ? -600 : 600;
+      ref.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
-
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (product) =>
-          product.title.toLowerCase().includes(query) ||
-          product.description.toLowerCase().includes(query) ||
-          product.location.address.toLowerCase().includes(query)
-      );
-    }
-
-    return filtered;
-  }, [searchQuery, selectedCategory]);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
   };
 
+  const popularRental = properties.filter((p) => p.category === "popular-rental");
+  const seoulRental = properties.filter((p) => p.category === "seoul-rental");
+  const busanRental = properties.filter((p) => p.category === "busan-rental");
+
   return (
-    <div className="flex flex-col h-screen w-full">
-      {/* Navigation Bar */}
-      <Navbar
-        onSearch={handleSearch}
-        markerStyle={markerStyle}
-        onMarkerStyleChange={setMarkerStyle}
-      />
+    <div className="min-h-screen bg-white">
+      <Navbar variant="main" />
 
       {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* Left side - Product List */}
-        <div
-          className={`h-full bg-gray-50 transition-all duration-300 ease-in-out relative ${
-            isListCollapsed ? "w-0" : "w-full md:w-1/2"
-          }`}
-        >
-          {!isListCollapsed && (
-            <ProductList
-              products={filteredProducts}
-              onProductHover={setHighlightedProductId}
-              highlightedProductId={highlightedProductId}
-              searchQuery={searchQuery}
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-            />
-          )}
+      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Section 1: 인기 렌탈 모음 */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold">인기 렌탈 모음 🔥</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => scroll(popularRentalRef, "left")}
+                className="p-2 border border-gray-300 rounded-full hover:shadow-md transition"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scroll(popularRentalRef, "right")}
+                className="p-2 border border-gray-300 rounded-full hover:shadow-md transition"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
 
-          {/* Toggle Button */}
-          <button
-            onClick={() => setIsListCollapsed(!isListCollapsed)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full z-10 bg-white shadow-lg p-2 hover:bg-gray-100 transition-all duration-200 border border-l-0 border-gray-200 rounded-r-lg"
+          <div
+            ref={popularRentalRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {isListCollapsed ? (
-              <ChevronRight className="w-6 h-6 text-gray-700" />
-            ) : (
-              <ChevronLeft className="w-6 h-6 text-gray-700" />
-            )}
-          </button>
-        </div>
+            {popularRental.map((property) => (
+              <div key={property.id} className="flex-none w-[280px]">
+                <PropertyCard {...property} />
+              </div>
+            ))}
+          </div>
+        </section>
 
-        {/* Right side - Map */}
-        <div
-          className={`h-full transition-all duration-300 ease-in-out ${
-            isListCollapsed ? "w-full" : "w-0 md:w-1/2"
-          }`}
-        >
-          <MapView
-            products={filteredProducts}
-            onMarkerHover={setHighlightedProductId}
-            highlightedProductId={highlightedProductId}
-            apiKey={GOOGLE_MAPS_API_KEY}
-            markerStyle={markerStyle}
-          />
-        </div>
-      </div>
+        {/* Section 2: 서울 렌탈 물품 */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold">서울 렌탈 - 카메라, 자전거, 캠핑용품</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => scroll(seoulRentalRef, "left")}
+                className="p-2 border border-gray-300 rounded-full hover:shadow-md transition"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scroll(seoulRentalRef, "right")}
+                className="p-2 border border-gray-300 rounded-full hover:shadow-md transition"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div
+            ref={seoulRentalRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {seoulRental.map((property) => (
+              <div key={property.id} className="flex-none w-[280px]">
+                <PropertyCard {...property} />
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Section 5: 부산 렌탈 물품 */}
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold">부산 렌탈 - 서핑, 수상 스포츠, 해변용품</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => scroll(busanRentalRef, "left")}
+                className="p-2 border border-gray-300 rounded-full hover:shadow-md transition"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scroll(busanRentalRef, "right")}
+                className="p-2 border border-gray-300 rounded-full hover:shadow-md transition"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div
+            ref={busanRentalRef}
+            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {busanRental.map((property) => (
+              <div key={property.id} className="flex-none w-[280px]">
+                <PropertyCard {...property} />
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
     </div>
   );
 }
