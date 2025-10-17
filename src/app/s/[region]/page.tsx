@@ -21,13 +21,13 @@ export default function SearchPage({
   >(null);
   const [searchQuery] = useState(decodeURIComponent(region));
   const [markerStyle, setMarkerStyle] = useState<MarkerStyle>("price");
-  const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(true);
+  const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
 
   // Replace with your Google Maps API key
   const GOOGLE_MAPS_API_KEY =
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "YOUR_API_KEY_HERE";
 
-  // Close drawer when screen size changes to desktop
+  // Handle drawer state based on screen size
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 640) {
@@ -36,6 +36,9 @@ export default function SearchPage({
         setIsMapDrawerOpen(true);
       }
     };
+
+    // Check initial screen size
+    handleResize();
 
     // Add event listener
     window.addEventListener("resize", handleResize);
