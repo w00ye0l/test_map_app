@@ -10,9 +10,7 @@ interface NavbarProps {
   variant?: "main" | "region";
 }
 
-export default function Navbar({
-  variant = "main",
-}: NavbarProps) {
+export default function Navbar({ variant = "main" }: NavbarProps) {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -37,9 +35,7 @@ export default function Navbar({
   }, [variant]);
 
   return (
-    <nav
-      className="border-b border-gray-200 sticky top-0 z-50 shadow-sm bg-gradient-to-b from-white to-gray-50"
-    >
+    <nav className="border-b border-gray-200 sticky top-0 z-50 shadow-sm bg-gradient-to-b from-white to-gray-50">
       <div
         className={`mx-auto ${
           variant === "main"
@@ -47,9 +43,7 @@ export default function Navbar({
             : "max-w-full px-4 sm:px-6 lg:px-8"
         }`}
       >
-        <div
-          className="flex items-center relative h-20 justify-between"
-        >
+        <div className="flex items-center relative h-20 justify-between">
           {/* Back Button - Mobile Only (Region Page) */}
           {variant === "region" && (
             <button
@@ -96,25 +90,13 @@ export default function Navbar({
           )}
 
           {/* Right Side - Desktop */}
-          <div className="hidden md:flex items-center gap-4">
-            <button className="p-2 hover:bg-gray-100 rounded-full transition">
-              <Globe className="w-5 h-5" />
+          <div className="hidden md:flex items-center gap-3">
+            <button className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-full transition">
+              <Globe className="w-5 h-5 text-gray-700" />
             </button>
 
-            <button className="flex items-center gap-2 border border-gray-300 rounded-full pl-3 pr-2 py-1.5 hover:shadow-md transition">
-              <Menu className="w-4 h-4" />
-              <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
-                <svg
-                  viewBox="0 0 32 32"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
-                  role="presentation"
-                  focusable="false"
-                  className="w-5 h-5 fill-white"
-                >
-                  <path d="M16 .7C7.56.7.7 7.56.7 16S7.56 31.3 16 31.3 31.3 24.44 31.3 16 24.44.7 16 .7zm0 28c-4.02 0-7.6-1.88-9.93-4.81a12.43 12.43 0 0 1 6.45-4.4A6.5 6.5 0 0 1 9.5 14a6.5 6.5 0 0 1 13 0 6.5 6.5 0 0 1-3.02 5.5 12.42 12.42 0 0 1 6.45 4.4A12.67 12.67 0 0 1 16 28.7z" />
-                </svg>
-              </div>
+            <button className="p-2.5 bg-gray-100 hover:bg-gray-200 rounded-full transition">
+              <Menu className="w-5 h-5 text-gray-700" />
             </button>
           </div>
 
@@ -142,7 +124,6 @@ export default function Navbar({
           </div>
         )}
       </div>
-
     </nav>
   );
 }
