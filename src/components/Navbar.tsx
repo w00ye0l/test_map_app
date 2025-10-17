@@ -58,7 +58,9 @@ export default function Navbar({
       >
         <div
           className={`flex items-center relative ${
-            variant === "main" ? "h-14 md:h-20 justify-center md:justify-between" : "h-20 justify-between"
+            variant === "main"
+              ? "h-14 md:h-20 justify-center md:justify-between"
+              : "h-20 justify-between"
           }`}
         >
           {/* Logo */}
@@ -109,7 +111,7 @@ export default function Navbar({
 
                   {/* Guests */}
                   <div className="flex-shrink-0">
-                    <div className="flex items-center pr-2">
+                    <div className="flex items-center pr-1">
                       <div className="px-4 py-2">
                         <input
                           type="text"

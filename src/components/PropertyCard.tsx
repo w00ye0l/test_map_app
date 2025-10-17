@@ -13,6 +13,7 @@ interface PropertyCardProps {
   price: number;
   rating: number;
   badge?: string;
+  rentalUnit: "시간" | "일" | "박";
 }
 
 export default function PropertyCard({
@@ -23,12 +24,13 @@ export default function PropertyCard({
   price,
   rating,
   badge,
+  rentalUnit,
 }: PropertyCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
     <Link href={`/region`} className="group cursor-pointer">
-      <div className="relative aspect-square rounded-xl overflow-hidden mb-3">
+      <div className="relative aspect-square rounded-3xl overflow-hidden mb-3">
         <Image
           src={image}
           alt={title}
@@ -49,7 +51,7 @@ export default function PropertyCard({
             e.preventDefault();
             setIsFavorite(!isFavorite);
           }}
-          className="absolute top-3 right-3 p-2 hover:scale-110 transition-transform"
+          className="absolute top-3 right-3 p-1 hover:scale-110 transition-transform"
         >
           <Heart
             className={`w-6 h-6 ${
@@ -62,22 +64,22 @@ export default function PropertyCard({
       </div>
 
       <div className="flex flex-col gap-1">
-        {/* Title and Rating */}
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-base truncate flex-1">{title}</h3>
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <Star className="w-4 h-4 fill-black" />
-            <span className="text-sm font-medium">{rating.toFixed(2)}</span>
-          </div>
-        </div>
+        {/* Title */}
+        <h3 className="font-semibold text-base truncate">{title}</h3>
 
         {/* Date */}
         <p className="text-sm text-gray-600">{date}</p>
 
-        {/* Price */}
-        <div className="mt-1">
-          <span className="font-semibold">₩{price.toLocaleString()}</span>
-          <span className="text-sm text-gray-600"> / 박</span>
+        {/* Price and Rating */}
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="font-semibold">₩{price.toLocaleString()}</span>
+            <span className="text-sm text-gray-600"> / {rentalUnit}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 fill-black" />
+            <span className="text-sm font-medium">{rating.toFixed(2)}</span>
+          </div>
         </div>
       </div>
     </Link>
