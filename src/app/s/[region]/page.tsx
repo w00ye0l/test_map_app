@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useState, useMemo, useEffect } from "react";
-import { Map } from "lucide-react";
+import { Map, List } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import PropertyCard from "@/components/PropertyCard";
 import MapView from "@/components/MapView";
@@ -22,6 +22,7 @@ export default function SearchPage({
   const [searchQuery] = useState(decodeURIComponent(region));
   const [markerStyle, setMarkerStyle] = useState<MarkerStyle>("price");
   const [isMapDrawerOpen, setIsMapDrawerOpen] = useState(false);
+  const [showFullscreenMap, setShowFullscreenMap] = useState(false);
 
   // Replace with your Google Maps API key
   const GOOGLE_MAPS_API_KEY =
@@ -68,11 +69,7 @@ export default function SearchPage({
   return (
     <div className="flex flex-col min-h-screen w-full bg-white">
       {/* Navigation Bar */}
-      <Navbar
-        variant="region"
-        markerStyle={markerStyle}
-        onMarkerStyleChange={setMarkerStyle}
-      />
+      <Navbar variant="region" />
 
       {/* Main Content */}
       <div className="flex flex-1 relative bg-white">
@@ -86,59 +83,90 @@ export default function SearchPage({
               highlightedProductId={highlightedPropertyId}
               apiKey={GOOGLE_MAPS_API_KEY}
               markerStyle={markerStyle}
+              onMarkerStyleChange={setMarkerStyle}
             />
           </div>
 
-          {/* Fixed Bottom List Button */}
-          <button
-            onClick={() => setIsMapDrawerOpen(true)}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 font-medium"
-          >
-            목록 보기
-          </button>
+          {/* Fixed Bottom List Button - Only show when drawer is closed */}
+          {!isMapDrawerOpen && (
+            <button
+              onClick={() => setIsMapDrawerOpen(true)}
+              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 font-medium"
+            >
+              <List className="w-5 h-5" />
+              목록 보기
+            </button>
+          )}
         </div>
 
         {/* Medium (640px - 950px): Grid only with map button */}
         <div className="hidden sm:block map-show:hidden w-full relative">
-          <div className="p-6 bg-white pb-24">
-            <div className="mb-6">
-              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
-                {searchQuery
-                  ? `"${searchQuery}" 검색 결과`
-                  : "렌탈 상품 둘러보기"}
-              </h1>
-              <p className="text-sm sm:text-base text-gray-600">
-                {filteredProperties.length}개의 상품
-                {searchQuery && ` 찾음`}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              {filteredProperties.map((property) => (
-                <div key={property.id}>
-                  <PropertyCard {...property} />
+          {!showFullscreenMap ? (
+            <>
+              <div className="p-6 bg-white pb-24">
+                <div className="mb-6">
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
+                    {searchQuery
+                      ? `"${searchQuery}" 검색 결과`
+                      : "렌탈 상품 둘러보기"}
+                  </h1>
+                  <p className="text-sm sm:text-base text-gray-600">
+                    {filteredProperties.length}개의 상품
+                    {searchQuery && ` 찾음`}
+                  </p>
                 </div>
-              ))}
-            </div>
 
-            {filteredProperties.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">검색 결과가 없습니다.</p>
-                <p className="text-gray-400 text-sm mt-2">
-                  다른 지역명으로 검색해보세요.
-                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  {filteredProperties.map((property) => (
+                    <div key={property.id}>
+                      <PropertyCard {...property} />
+                    </div>
+                  ))}
+                </div>
+
+                {filteredProperties.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 text-lg">검색 결과가 없습니다.</p>
+                    <p className="text-gray-400 text-sm mt-2">
+                      다른 지역명으로 검색해보세요.
+                    </p>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Fixed Bottom Map Button */}
-          <button
-            onClick={() => setIsMapDrawerOpen(true)}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 font-medium"
-          >
-            <Map className="w-5 h-5" />
-            지도 보기
-          </button>
+              {/* Fixed Bottom Map Button */}
+              <button
+                onClick={() => setShowFullscreenMap(true)}
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 font-medium"
+              >
+                <Map className="w-5 h-5" />
+                지도 보기
+              </button>
+            </>
+          ) : (
+            <>
+              {/* Fullscreen Map View */}
+              <div className="h-[calc(100vh-5rem)] w-full">
+                <MapView
+                  products={filteredProperties}
+                  onMarkerHover={setHighlightedPropertyId}
+                  highlightedProductId={highlightedPropertyId}
+                  apiKey={GOOGLE_MAPS_API_KEY}
+                  markerStyle={markerStyle}
+                  onMarkerStyleChange={setMarkerStyle}
+                />
+              </div>
+
+              {/* Fixed Bottom List Button */}
+              <button
+                onClick={() => setShowFullscreenMap(false)}
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-colors flex items-center gap-2 font-medium"
+              >
+                <List className="w-5 h-5" />
+                목록 보기
+              </button>
+            </>
+          )}
         </div>
 
         {/* Large (950px+): Split view with grid on left, map on right */}
@@ -192,6 +220,7 @@ export default function SearchPage({
                   highlightedProductId={highlightedPropertyId}
                   apiKey={GOOGLE_MAPS_API_KEY}
                   markerStyle={markerStyle}
+                  onMarkerStyleChange={setMarkerStyle}
                 />
               </div>
             </div>

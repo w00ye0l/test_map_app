@@ -1,7 +1,7 @@
 "use client";
 
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
-import { Home } from "lucide-react";
+import { Home, DollarSign } from "lucide-react";
 import { Product } from "@/data/products";
 import { Property } from "@/data/properties";
 import { MarkerStyle } from "@/types/marker";
@@ -15,6 +15,7 @@ interface MapViewProps {
   highlightedProductId?: number | null;
   apiKey: string;
   markerStyle?: MarkerStyle;
+  onMarkerStyleChange?: (style: MarkerStyle) => void;
 }
 
 export default function MapView({
@@ -23,6 +24,7 @@ export default function MapView({
   highlightedProductId,
   apiKey,
   markerStyle = "price",
+  onMarkerStyleChange,
 }: MapViewProps) {
 
   // Calculate center of all products
@@ -85,7 +87,7 @@ export default function MapView({
                 }`}
               />
             </div>
-            <span className="font-semibold text-sm pr-1">${product.price}</span>
+            <span className="font-semibold text-sm pr-1">₩{product.price.toLocaleString()}</span>
           </div>
         );
 
@@ -99,21 +101,76 @@ export default function MapView({
                 : "bg-white text-gray-900 hover:bg-[#FF8C42] hover:text-white hover:scale-105"
             }`}
           >
-            ${product.price}
+            ₩{product.price.toLocaleString()}
           </div>
         );
     }
   };
 
+  // Ultra minimal map styles - almost invisible
+  const mapStyles = [
+    {
+      featureType: "all",
+      elementType: "labels",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "all",
+      elementType: "geometry",
+      stylers: [{ saturation: -100 }, { lightness: 50 }],
+    },
+    {
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [{ color: "#f0f0f0" }],
+    },
+    {
+      featureType: "landscape",
+      elementType: "geometry",
+      stylers: [{ color: "#fafafa" }],
+    },
+    {
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [{ color: "#f5f5f5" }, { weight: 0.5 }],
+    },
+    {
+      featureType: "road",
+      elementType: "labels",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "poi",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "transit",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "administrative",
+      elementType: "geometry",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "administrative.locality",
+      elementType: "labels",
+      stylers: [{ visibility: "simplified" }, { lightness: 80 }],
+    },
+  ];
+
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full relative">
       <APIProvider apiKey={apiKey} language="en">
         <Map
           defaultCenter={center}
           defaultZoom={12}
           mapId="product-map"
-          disableDefaultUI={false}
+          disableDefaultUI={true}
+          clickableIcons={false}
           gestureHandling="greedy"
+          styles={mapStyles}
+          zoomControl={true}
         >
           {products.map((product) => {
             const isHighlighted = highlightedProductId === product.id;
@@ -131,6 +188,48 @@ export default function MapView({
           })}
         </Map>
       </APIProvider>
+
+      {/* Marker Style Selector - Absolute positioned on top right */}
+      {onMarkerStyleChange && (
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-1 bg-white rounded-lg p-1 shadow-lg">
+          <button
+            onClick={() => onMarkerStyleChange("icon")}
+            className={`p-2 rounded-md transition-all ${
+              markerStyle === "icon"
+                ? "bg-gray-100 shadow-sm"
+                : "hover:bg-gray-100"
+            }`}
+            title="Icon only"
+          >
+            <Home className="w-4 h-4 text-gray-700" />
+          </button>
+          <button
+            onClick={() => onMarkerStyleChange("icon-price")}
+            className={`p-2 rounded-md transition-all ${
+              markerStyle === "icon-price"
+                ? "bg-gray-100 shadow-sm"
+                : "hover:bg-gray-100"
+            }`}
+            title="Icon + Price"
+          >
+            <div className="flex items-center gap-1">
+              <Home className="w-4 h-4 text-gray-700" />
+              <DollarSign className="w-3 h-3 text-gray-700" />
+            </div>
+          </button>
+          <button
+            onClick={() => onMarkerStyleChange("price")}
+            className={`p-2 rounded-md transition-all ${
+              markerStyle === "price"
+                ? "bg-gray-100 shadow-sm"
+                : "hover:bg-gray-100"
+            }`}
+            title="Price only"
+          >
+            <DollarSign className="w-4 h-4 text-gray-700" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

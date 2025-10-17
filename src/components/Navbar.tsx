@@ -1,21 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, MapPin, Home, DollarSign, Globe, ArrowLeft } from "lucide-react";
-import { MarkerStyle } from "@/types/marker";
+import { Menu, X, MapPin, Globe, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SearchBar from "./SearchBar";
 
 interface NavbarProps {
-  markerStyle?: MarkerStyle;
-  onMarkerStyleChange?: (style: MarkerStyle) => void;
   variant?: "main" | "region";
 }
 
 export default function Navbar({
-  markerStyle = "price",
-  onMarkerStyleChange,
   variant = "main",
 }: NavbarProps) {
   const router = useRouter();
@@ -102,48 +97,6 @@ export default function Navbar({
 
           {/* Right Side - Desktop */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Marker Style Selector - Only on Region Page */}
-            {variant === "region" && (
-              <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                <button
-                  onClick={() => onMarkerStyleChange?.("icon")}
-                  className={`p-2 rounded-md transition-all ${
-                    markerStyle === "icon"
-                      ? "bg-white shadow-sm"
-                      : "hover:bg-gray-200"
-                  }`}
-                  title="Icon only"
-                >
-                  <Home className="w-4 h-4 text-gray-700" />
-                </button>
-                <button
-                  onClick={() => onMarkerStyleChange?.("icon-price")}
-                  className={`p-2 rounded-md transition-all ${
-                    markerStyle === "icon-price"
-                      ? "bg-white shadow-sm"
-                      : "hover:bg-gray-200"
-                  }`}
-                  title="Icon + Price"
-                >
-                  <div className="flex items-center gap-1">
-                    <Home className="w-4 h-4 text-gray-700" />
-                    <DollarSign className="w-3 h-3 text-gray-700" />
-                  </div>
-                </button>
-                <button
-                  onClick={() => onMarkerStyleChange?.("price")}
-                  className={`p-2 rounded-md transition-all ${
-                    markerStyle === "price"
-                      ? "bg-white shadow-sm"
-                      : "hover:bg-gray-200"
-                  }`}
-                  title="Price only"
-                >
-                  <DollarSign className="w-4 h-4 text-gray-700" />
-                </button>
-              </div>
-            )}
-
             <button className="p-2 hover:bg-gray-100 rounded-full transition">
               <Globe className="w-5 h-5" />
             </button>
@@ -190,57 +143,6 @@ export default function Navbar({
         )}
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {isMenuOpen && variant === "region" && (
-        <div className="md:hidden border-t border-gray-200 bg-white">
-          <div className="px-4 py-3 space-y-3">
-            {/* Marker Style Selector */}
-            <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700">
-                Marker Style
-              </span>
-              <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                <button
-                  onClick={() => onMarkerStyleChange?.("icon")}
-                  className={`flex-1 p-2 rounded-md transition-all ${
-                    markerStyle === "icon"
-                      ? "bg-white shadow-sm"
-                      : "hover:bg-gray-200"
-                  }`}
-                  title="Icon only"
-                >
-                  <Home className="w-4 h-4 text-gray-700 mx-auto" />
-                </button>
-                <button
-                  onClick={() => onMarkerStyleChange?.("icon-price")}
-                  className={`flex-1 p-2 rounded-md transition-all ${
-                    markerStyle === "icon-price"
-                      ? "bg-white shadow-sm"
-                      : "hover:bg-gray-200"
-                  }`}
-                  title="Icon + Price"
-                >
-                  <div className="flex items-center justify-center gap-1">
-                    <Home className="w-4 h-4 text-gray-700" />
-                    <DollarSign className="w-3 h-3 text-gray-700" />
-                  </div>
-                </button>
-                <button
-                  onClick={() => onMarkerStyleChange?.("price")}
-                  className={`flex-1 p-2 rounded-md transition-all ${
-                    markerStyle === "price"
-                      ? "bg-white shadow-sm"
-                      : "hover:bg-gray-200"
-                  }`}
-                  title="Price only"
-                >
-                  <DollarSign className="w-4 h-4 text-gray-700 mx-auto" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </nav>
   );
 }
