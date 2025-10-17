@@ -29,7 +29,7 @@ export default function PropertyCard({
   const [isFavorite, setIsFavorite] = useState(false);
 
   return (
-    <Link href={`/region`} className="group cursor-pointer">
+    <Link href={`/products/${id}`} className="group cursor-pointer">
       <div className="relative aspect-square rounded-3xl overflow-hidden mb-3">
         <Image
           src={image}

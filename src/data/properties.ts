@@ -1,10 +1,17 @@
+import { Host, hosts } from "./hosts";
+import { Review, reviewCounts, productReviews } from "./reviews";
+
 export interface Property {
   id: number;
   image: string;
+  images?: string[]; // 추가: 여러 이미지 (optional)
   title: string;
+  description?: string; // 추가: 상품 설명 (optional)
   date: string;
   price: number;
   rating: number;
+  reviews?: number; // 추가: 리뷰 개수 (optional)
+  reviewList?: Review[]; // 추가: 실제 리뷰 데이터 (optional)
   badge?: string;
   category: string;
   rentalUnit: "시간" | "일" | "박";
@@ -13,6 +20,9 @@ export interface Property {
     lng: number;
     address: string;
   };
+  host?: Host; // 추가: 호스트 정보 (optional)
+  features?: string[]; // 추가: 상품 특징 (optional)
+  rules?: string[]; // 추가: 대여 규칙 (optional)
 }
 
 export const properties: Property[] = [
@@ -21,18 +31,47 @@ export const properties: Property[] = [
     id: 1,
     image:
       "https://images.unsplash.com/photo-1606986601547-a4d886b671b2?w=800&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1606986601547-a4d886b671b2?w=800&q=80",
+      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80",
+      "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&q=80",
+      "https://images.unsplash.com/photo-1606986623325-94e2bc79d6e7?w=800&q=80",
+      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80",
+    ],
     title: "전문가용 미러리스 카메라 (Sony A7 IV)",
+    description:
+      "최신 풀프레임 미러리스 카메라 Sony A7 IV입니다. 4K 60p 영상 촬영이 가능하며, 3300만 화소의 고해상도 이미지를 제공합니다. 전문 사진작가부터 취미로 사진을 즐기시는 분들까지 모두 만족하실 수 있는 최고급 장비입니다. 배터리 2개, 64GB SD카드, 청소 키트가 포함되어 있습니다.",
     date: "1일 대여",
     price: 45000,
     rating: 4.98,
+    reviews: 127,
     badge: "인기 렌탈",
     category: "seoul-rental",
     rentalUnit: "일",
     location: {
       lat: 37.5665,
       lng: 126.978,
-      address: "서울",
+      address: "서울특별시 중구 명동",
     },
+    host: hosts[0],
+    features: [
+      "풀프레임 미러리스 카메라",
+      "4K 60p 동영상 촬영",
+      "3300만 화소",
+      "배터리 2개 포함",
+      "64GB SD카드 포함",
+      "청소 키트 제공",
+      "전문가용 렌즈 호환",
+      "실시간 Eye-AF 지원",
+    ],
+    rules: [
+      "대여 시 신분증 필수",
+      "보증금 100,000원 (반납 시 환불)",
+      "파손 시 수리비 청구",
+      "늦은 반납 시 시간당 10,000원 추가",
+      "습기 및 충격 주의",
+      "타인 양도 금지",
+    ],
   },
   {
     id: 2,
@@ -611,4 +650,29 @@ export const properties: Property[] = [
       address: "부산",
     },
   },
-];
+].map((property) => ({
+  ...property,
+  reviews: property.reviews || reviewCounts[property.id],
+  reviewList: productReviews[property.id] || [],
+  host: property.host || hosts[(property.id - 1) % hosts.length],
+  images: property.images || Array(5).fill(property.image),
+  description:
+    property.description ||
+    `${property.title}에 대한 상세 설명입니다. 최상의 상태로 관리되고 있으며, 대여 시 필요한 모든 액세서리가 포함되어 있습니다. 안전하고 편리한 대여 경험을 제공합니다.`,
+  features: property.features || [
+    "깨끗하고 위생적인 상태",
+    "모든 액세서리 포함",
+    "사용 설명서 제공",
+    "24시간 고객 지원",
+    "편리한 픽업/반납",
+    "보험 가입 가능",
+  ],
+  rules: property.rules || [
+    "대여 시 신분증 필수",
+    "보증금 필요 (반납 시 환불)",
+    "파손 시 수리비 청구",
+    "늦은 반납 시 추가 요금",
+    "타인 양도 금지",
+    "사용 전 상태 확인 필수",
+  ],
+})) as Property[];
