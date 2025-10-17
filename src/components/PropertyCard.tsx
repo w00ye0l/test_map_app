@@ -65,20 +65,22 @@ export default function PropertyCard({
 
       <div className="flex flex-col gap-1">
         {/* Title */}
-        <h3 className="font-semibold text-base truncate">{title}</h3>
+        <h3 className="font-semibold text-sm sm:text-base truncate">{title}</h3>
 
         {/* Date */}
-        <p className="text-sm text-gray-600">{date}</p>
+        <p className="text-xs sm:text-sm text-gray-600">{date}</p>
 
         {/* Price and Rating */}
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="font-semibold">₩{price.toLocaleString()}</span>
-            <span className="text-sm text-gray-600"> / {rentalUnit}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 fill-black" />
-            <span className="text-sm font-medium">{rating.toFixed(2)}</span>
+        <div className="flex items-center gap-1">
+          <span className="text-xs sm:text-sm font-semibold text-gray-500">
+            ₩{price.toLocaleString()}
+          </span>
+          <span className="text-xs sm:text-sm text-gray-600">{rentalUnit}</span>
+          <div className="flex items-center gap-0.5">
+            <Star className="w-2 sm:w-4 h-2 sm:h-4 fill-gray-500 stroke-gray-500" />
+            <span className="text-xs sm:text-sm font-medium text-gray-600">
+              {rating.toFixed(2)}
+            </span>
           </div>
         </div>
       </div>
