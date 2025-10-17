@@ -1,27 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Menu, X, MapPin, Home, DollarSign, Globe } from "lucide-react";
+import { Menu, X, MapPin, Home, DollarSign, Globe, ArrowLeft } from "lucide-react";
 import { MarkerStyle } from "@/types/marker";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import SearchBar from "./SearchBar";
 
 interface NavbarProps {
-  onSearch?: (query: string) => void;
   markerStyle?: MarkerStyle;
   onMarkerStyleChange?: (style: MarkerStyle) => void;
   variant?: "main" | "region";
 }
 
 export default function Navbar({
-  onSearch,
   markerStyle = "price",
   onMarkerStyleChange,
   variant = "main",
 }: NavbarProps) {
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [guests, setGuests] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -45,9 +43,7 @@ export default function Navbar({
 
   return (
     <nav
-      className={`border-b border-gray-200 sticky top-0 z-50 shadow-sm ${
-        variant === "main" ? "bg-gray-50" : "bg-white"
-      }`}
+      className="border-b border-gray-200 sticky top-0 z-50 shadow-sm bg-gradient-to-b from-white to-gray-50"
     >
       <div
         className={`mx-auto ${
@@ -57,140 +53,51 @@ export default function Navbar({
         }`}
       >
         <div
-          className={`flex items-center relative ${
-            variant === "main"
-              ? "h-14 md:h-20 justify-center md:justify-between"
-              : "h-20 justify-between"
-          }`}
+          className="flex items-center relative h-20 justify-between"
         >
-          {/* Logo */}
+          {/* Back Button - Mobile Only (Region Page) */}
+          {variant === "region" && (
+            <button
+              onClick={() => router.back()}
+              className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <ArrowLeft className="w-6 h-6 text-gray-700" />
+            </button>
+          )}
+
+          {/* Logo - Desktop only */}
           <Link
             href="/"
-            className={`flex items-center gap-2 flex-shrink-0 ${
-              variant === "main" ? "hidden md:flex" : "flex"
-            }`}
+            className="hidden md:flex items-center gap-2 flex-shrink-0"
           >
             <MapPin className="w-8 h-8 text-[#FF8C42]" />
             <span className="text-xl font-bold text-gray-900">Locano</span>
           </Link>
 
-          {/* Main Page - Compact Search Bar (Mobile: Always, Desktop: When Scrolled) */}
+          {/* Main Page - Compact Search Bar (Mobile: Center, Desktop: When Scrolled) */}
           {variant === "main" && (
             <div
-              className={`w-auto md:absolute md:left-1/2 md:-translate-x-1/2 ${
+              className={`absolute left-1/2 -translate-x-1/2 ${
                 isScrolled ? "flex" : "flex md:hidden"
               }`}
             >
-              <div className="bg-white rounded-full shadow-md border border-gray-200 hover:shadow-lg">
-                <div className="flex items-center divide-x divide-gray-300">
-                  {/* Location */}
-                  <div className="flex-shrink-0">
-                    <div className="px-4 py-2">
-                      <input
-                        type="text"
-                        placeholder="근처 상품"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="w-20 text-sm text-center text-gray-800 bg-transparent outline-none placeholder:text-gray-800"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Date */}
-                  <div className="flex-shrink-0">
-                    <div className="px-4 py-2">
-                      <input
-                        type="text"
-                        placeholder="언제든"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="w-16 text-sm text-center text-gray-800 bg-transparent outline-none placeholder:text-gray-800"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Guests */}
-                  <div className="flex-shrink-0">
-                    <div className="flex items-center pr-1">
-                      <div className="px-4 py-2">
-                        <input
-                          type="text"
-                          placeholder="게스트 추가"
-                          value={guests}
-                          onChange={(e) => setGuests(e.target.value)}
-                          className="w-16 text-sm text-center text-gray-800 bg-transparent outline-none placeholder:text-gray-800"
-                        />
-                      </div>
-
-                      {/* Search Button */}
-                      <button className="bg-[#FF8C42] text-white p-2 rounded-full hover:bg-[#E67A2E]">
-                        <Search className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <SearchBar variant="main-compact" />
             </div>
           )}
 
-          {/* Region Page - Compact Search Bar */}
+          {/* Region Page - Search Bar */}
           {variant === "region" && (
-            <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-              <div className="w-full bg-white rounded-full shadow-md border border-gray-200 hover:shadow-lg transition-shadow">
-                <div className="flex items-center divide-x divide-gray-300">
-                  {/* Location */}
-                  <div className="flex-1 min-w-0">
-                    <div className="px-6 py-2.5">
-                      <div className="text-xs font-semibold mb-0.5">어떤지</div>
-                      <input
-                        type="text"
-                        placeholder="어떤지 검색"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="w-full text-sm text-gray-600 bg-transparent outline-none placeholder:text-gray-400"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Date */}
-                  <div className="flex-1 min-w-0">
-                    <div className="px-6 py-2.5">
-                      <div className="text-xs font-semibold mb-0.5">날짜</div>
-                      <input
-                        type="text"
-                        placeholder="날짜 추가"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="w-full text-sm text-gray-600 bg-transparent outline-none placeholder:text-gray-400"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Guests */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center pr-2">
-                      <div className="flex-1 px-6 py-2.5">
-                        <div className="text-xs font-semibold mb-0.5">
-                          여행자
-                        </div>
-                        <input
-                          type="text"
-                          placeholder="게스트 추가"
-                          value={guests}
-                          onChange={(e) => setGuests(e.target.value)}
-                          className="w-full text-sm text-gray-600 bg-transparent outline-none placeholder:text-gray-400"
-                        />
-                      </div>
-
-                      {/* Search Button */}
-                      <button className="bg-[#FF8C42] text-white p-2.5 rounded-full hover:bg-[#E67A2E] transition-colors">
-                        <Search className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            <>
+              {/* Mobile: Center small search */}
+              <div className="md:hidden absolute left-1/2 -translate-x-1/2">
+                <SearchBar variant="main-compact" />
               </div>
-            </div>
+
+              {/* Desktop: Full search */}
+              <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+                <SearchBar variant="region-desktop" />
+              </div>
+            </>
           )}
 
           {/* Right Side - Desktop */}
@@ -277,94 +184,7 @@ export default function Navbar({
         {variant === "main" && !isScrolled && (
           <div className="hidden md:block pb-6 pt-4">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-full shadow-lg border border-gray-200 hover:shadow-xl">
-                <div className="flex items-center divide-x divide-gray-300">
-                  {/* Location */}
-                  <div className="flex-1 min-w-0">
-                    <div className="px-8 py-3">
-                      <div className="text-xs font-semibold">여행지</div>
-                      <input
-                        type="text"
-                        placeholder="여행지 검색"
-                        value={location}
-                        onChange={(e) => setLocation(e.target.value)}
-                        className="w-full text-sm text-gray-600 bg-transparent outline-none placeholder:text-gray-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Date */}
-                  <div className="flex-1 min-w-0">
-                    <div className="px-6 py-3">
-                      <div className="text-xs font-semibold">날짜</div>
-                      <input
-                        type="text"
-                        placeholder="날짜 추가"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        className="w-full text-sm text-gray-600 bg-transparent outline-none placeholder:text-gray-500"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Guests */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center pr-2">
-                      <div className="flex-1 px-6 py-3">
-                        <div className="text-xs font-semibold">여행자</div>
-                        <input
-                          type="text"
-                          placeholder="게스트 추가"
-                          value={guests}
-                          onChange={(e) => setGuests(e.target.value)}
-                          className="w-full text-sm text-gray-600 bg-transparent outline-none placeholder:text-gray-500"
-                        />
-                      </div>
-
-                      {/* Search Button */}
-                      <button className="bg-[#FF8C42] text-white p-4 rounded-full hover:bg-[#E67A2E] transition-colors">
-                        <Search className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Region Page - Mobile Search Bar */}
-        {variant === "region" && (
-          <div className="md:hidden pb-3">
-            <div className="bg-white rounded-full shadow-md border border-gray-200 p-3">
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  placeholder="어떤지 검색"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full text-sm bg-transparent outline-none placeholder:text-gray-400"
-                />
-                <input
-                  type="text"
-                  placeholder="날짜 추가"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full text-sm bg-transparent outline-none placeholder:text-gray-400"
-                />
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="게스트 추가"
-                    value={guests}
-                    onChange={(e) => setGuests(e.target.value)}
-                    className="flex-1 text-sm bg-transparent outline-none placeholder:text-gray-400"
-                  />
-                  <button className="bg-[#FF8C42] text-white p-2 rounded-full hover:bg-[#E67A2E] transition-colors">
-                    <Search className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+              <SearchBar variant="main-full" />
             </div>
           </div>
         )}

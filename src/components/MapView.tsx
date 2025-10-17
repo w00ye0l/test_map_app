@@ -3,10 +3,14 @@
 import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import { Home } from "lucide-react";
 import { Product } from "@/data/products";
+import { Property } from "@/data/properties";
 import { MarkerStyle } from "@/types/marker";
 
+// Union type for items that can be displayed on the map
+type MapItem = Product | Property;
+
 interface MapViewProps {
-  products: Product[];
+  products: MapItem[];
   onMarkerHover?: (productId: number | null) => void;
   highlightedProductId?: number | null;
   apiKey: string;
@@ -22,12 +26,21 @@ export default function MapView({
 }: MapViewProps) {
 
   // Calculate center of all products
-  const center = {
-    lat: products.reduce((sum, p) => sum + p.location.lat, 0) / products.length,
-    lng: products.reduce((sum, p) => sum + p.location.lng, 0) / products.length,
-  };
+  // Default to Seoul coordinates if no products
+  const defaultCenter = { lat: 37.5665, lng: 126.978 };
+  const center =
+    products.length > 0
+      ? {
+          lat:
+            products.reduce((sum, p) => sum + p.location.lat, 0) /
+            products.length,
+          lng:
+            products.reduce((sum, p) => sum + p.location.lng, 0) /
+            products.length,
+        }
+      : defaultCenter;
 
-  const renderMarkerContent = (product: Product, isHighlighted: boolean) => {
+  const renderMarkerContent = (product: MapItem, isHighlighted: boolean) => {
     switch (markerStyle) {
       case "icon":
         return (
