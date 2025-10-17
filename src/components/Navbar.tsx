@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, MapPin, Globe, ArrowLeft } from "lucide-react";
+import { Menu, X, MapPin, Globe, ArrowLeft, Heart, Share } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SearchBar from "./SearchBar";
 
 interface NavbarProps {
-  variant?: "main" | "region";
+  variant?: "main" | "region" | "product";
 }
 
 export default function Navbar({ variant = "main" }: NavbarProps) {
@@ -35,7 +35,7 @@ export default function Navbar({ variant = "main" }: NavbarProps) {
   }, [variant]);
 
   return (
-    <nav className="border-b border-gray-200 sticky top-0 z-50 shadow-sm bg-gradient-to-b from-white to-gray-50">
+    <nav className={`border-b border-gray-200 sticky top-0 z-50 shadow-sm ${variant === "main" ? "bg-gradient-to-b from-white to-gray-50" : "bg-white"}`}>
       <div
         className={`mx-auto ${
           variant === "main"
@@ -43,7 +43,34 @@ export default function Navbar({ variant = "main" }: NavbarProps) {
             : "max-w-full px-4 sm:px-6 lg:px-8"
         }`}
       >
-        <div className="flex items-center relative h-20 justify-between">
+        <div
+          className={`flex items-center relative justify-between ${
+            variant === "product" ? "h-14 md:h-24" : "h-24"
+          }`}
+        >
+          {/* Product Page - Mobile Only Navigation */}
+          {variant === "product" && (
+            <>
+              {/* Left: Back Button - Mobile only */}
+              <button
+                onClick={() => router.back()}
+                className="md:hidden p-2 hover:bg-gray-100 rounded-full transition"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              </button>
+
+              {/* Right: Share and Save Buttons - Mobile only */}
+              <div className="md:hidden flex items-center gap-2">
+                <button className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <Share className="w-5 h-5 text-gray-700" />
+                </button>
+                <button className="p-2 hover:bg-gray-100 rounded-full transition">
+                  <Heart className="w-5 h-5 text-gray-700" />
+                </button>
+              </div>
+            </>
+          )}
+
           {/* Back Button - Mobile Only (Region Page) */}
           {variant === "region" && (
             <button
@@ -101,18 +128,20 @@ export default function Navbar({ variant = "main" }: NavbarProps) {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`p-2 rounded-md text-gray-700 hover:bg-gray-100 ${
-              variant === "main" ? "hidden" : "md:hidden"
-            }`}
-          >
-            {isMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+          {variant !== "product" && (
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className={`p-2 rounded-md text-gray-700 hover:bg-gray-100 ${
+                variant === "main" ? "hidden" : "md:hidden"
+              }`}
+            >
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          )}
         </div>
 
         {/* Main Page - Search Bar Below Navbar (Desktop Only) */}

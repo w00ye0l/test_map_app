@@ -142,7 +142,7 @@ export const properties: Property[] = [
   {
     id: 6,
     image:
-      "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80",
+      "https://images.unsplash.com/photo-1526925712774-2833a7ecd0d4?w=800&q=80",
     title: "노트북 (MacBook Pro 16)",
     date: "1일 대여",
     price: 40000,

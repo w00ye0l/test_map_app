@@ -59,7 +59,7 @@ export default function ProductDetailPage({
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar variant="region" />
+      <Navbar variant="product" />
 
       {/* Image Gallery - Mobile: Single Image with arrows, Desktop: Grid */}
       {/* Mobile View - Full Width Single Image */}
@@ -88,8 +88,22 @@ export default function ProductDetailPage({
         )}
       </div>
 
+      {/* Desktop View - Share and Save Buttons */}
+      <div className="hidden md:flex max-w-[1120px] mx-auto px-6 pt-6 pb-4 justify-end">
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-lg transition">
+            <Share2 className="w-4 h-4 text-gray-700" />
+            <span className="text-sm font-medium text-gray-700 underline">공유하기</span>
+          </button>
+          <button className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-lg transition">
+            <Heart className="w-4 h-4 text-gray-700" />
+            <span className="text-sm font-medium text-gray-700 underline">저장</span>
+          </button>
+        </div>
+      </div>
+
       {/* Desktop View - Grid Gallery */}
-      <div className="hidden md:block max-w-[1120px] mx-auto px-6 pt-6">
+      <div className="hidden md:block max-w-[1120px] mx-auto px-6">
         <div className="grid grid-cols-2 gap-2 h-[500px]">
           {/* Main Image - Left Side */}
           <div className="relative rounded-l-xl overflow-hidden">
